@@ -1,0 +1,15 @@
+{
+  "1" : {
+          "task_id_1" : 1,
+          "task_id_2" : 1,
+          "rule_type" : 1
+        },
+
+  "2" : {
+          "task_id_1" : 2,
+          "task_id_2" : 2,
+          "rule_type" : 2,
+          "if_task_2_equals": "Closed",
+          "then_task_1_equals": "Ready for sale"
+        }
+}

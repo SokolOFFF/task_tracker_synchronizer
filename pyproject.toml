@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "task-tracker-synchronizer"
+version = "0.1.0"
+description = ""
+authors = ["SokolOFFF <egor1sokolov@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.33.0"
+flake8 = "^7.0.0"
+pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
