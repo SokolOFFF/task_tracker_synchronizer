@@ -1,20 +1,10 @@
-import requests
-import json
 from time import sleep
 from datetime import datetime, timedelta
+from api_functions import get_jira_issue_data, get_youtrack_issue_data
+import json
 
 config = None
 rules = None
-
-
-# Gets jira data
-def get_jira_data():
-    pass
-
-
-# Gets youtrack data
-def get_youtrack_data():
-    pass
 
 
 # Updates rules
