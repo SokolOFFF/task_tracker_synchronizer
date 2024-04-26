@@ -13,6 +13,10 @@ worker.start()
 def get_rules():
     return synchronizer.rules
 
+@app.get("/task_fields/")
+def get_rules():
+    return synchronizer.config['task_fields']
+
 def __add_rule(rule):
     json_rule = json.loads(rule)
     all_rules = synchronizer.rules
