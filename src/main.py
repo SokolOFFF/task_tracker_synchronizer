@@ -27,7 +27,7 @@ def __add_rule(rule):
     with open('../config/config.json', 'w') as f:
         f.write(all_rules)
 
-@app.post("/rules/")
+@app.post("/rule/")
 def add_rule(new_rule):
     try:
         __add_rule(new_rule)
