@@ -1,4 +1,5 @@
-from freezegun import freeze_time
+from src.synchronizer import update_rules
+from unittest.mock import mock_open, patch
 import pytest
 from src.synchronizer import update_rules, apply_rule, check_two_tasks_synchronization, check_synchronizations, main
 from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
@@ -96,51 +97,41 @@ def test_check_synchronizations(mock_check_two_tasks_synchronization):
     mock_check_two_tasks_synchronization.assert_any_call(rules["rule2"])
 
 
-# @patch('src.synchronizer.sleep', return_value=None)
-# @patch('builtins.open', new_callable=mock_open, read_data='{"frequency": 10}')
-# @freeze_time("2023-04-26 12:00:00")
-# def test_main(mock_open, mock_sleep):
-#     with patch('src.synchronizer.update_rules') as mock_update_rules:
-#         with patch('src.synchronizer.check_synchronizations') as mock_check_synchronizations:
-#             main()
-#             # Assert that update_rules and check_synchronizations are called once initially
-#             mock_update_rules.assert_called_once()
-#             mock_check_synchronizations.assert_called_once()
-#             # Move time forward by the configured frequency
-#             frozen_time = datetime.now() + timedelta(seconds=10)
-#             with freeze_time(frozen_time):
-#                 main()
-#                 # Assert that update_rules and check_synchronizations are called again
-#                 assert mock_update_rules.call_count == 2
-#                 assert mock_check_synchronizations.call_count == 2
-#             # Advance time further and check that the functions are called again
-#             frozen_time += timedelta(seconds=10)
-#             with freeze_time(frozen_time):
-#                 main()
-#                 assert mock_update_rules.call_count == 3
-#                 assert mock_check_synchronizations.call_count == 3
+def test_update_rules():
+    mock_rules = {
+        "rule1": {
+            "task_id_1": "task1",
+            "task_id_2": "task2",
+            "fields": {
+                "Summary": {
+                    "rule_type": 1
+                },
+                "Status": {
+                    "rule_type": 1
+                }
+            }
+        },
+        "rule2": {
+            "task_id_1": "task3",
+            "task_id_2": "task4",
+            "fields": {
+                "Description": {
+                    "rule_type": 1
+                }
+            }
+        }
+    }
+
+    with patch('builtins.open', mock_open(read_data=json.dumps(mock_rules))):
+        update_rules()
+        from src.synchronizer import rules
+
+        assert rules == mock_rules
 
 
-# @patch('src.synchronizer.sleep', return_value=None)
-# @patch('builtins.open', new_callable=mock_open, read_data='{"frequency": 10}')
-# @freeze_time("2023-04-26 12:00:00")
-# def test_main(mock_open, mock_sleep, time_machine):
-#     with patch('src.synchronizer.update_rules') as mock_update_rules:
-#         with patch('src.synchronizer.check_synchronizations') as mock_check_synchronizations:
-#             main()
-#             # Assert that update_rules and check_synchronizations are called once initially
-#             mock_update_rules.assert_called_once()
-#             mock_check_synchronizations.assert_called_once()
-#             # Move time forward by the configured frequency
-#             time_machine.tick(delta=timedelta(seconds=10))
-#             main()
-#             # Assert that update_rules and check_synchronizations are called again
-#             assert mock_update_rules.call_count == 2
-#             assert mock_check_synchronizations.call_count == 2
-#             # Advance time further and check that the functions are called again
-#             time_machine.tick(delta=timedelta(seconds=10))
-#             main()
-#             assert mock_update_rules.call_count == 3
-#             assert mock_check_synchronizations.call_count == 3
-#             # Stop the infinite loop by advancing time beyond the maximum allowed duration
-#             time_machine.move_to(datetime.now() + timedelta(days=1))
+def test_update_rules_file_not_found(capsys):
+    with patch('builtins.open', side_effect=FileNotFoundError):
+        update_rules()
+        assert "Error: Rules file not found" in capsys.readouterr().out
+
+# TODO: Add tests for the main function

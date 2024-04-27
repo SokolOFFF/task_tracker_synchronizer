@@ -93,8 +93,8 @@ def get_youtrack_issue_json(issue_key):
 
 # Function which edits jira issue
 def edit_jira_issue(issue_key, new_json_data):
-    config = json.load(open('../config/config.json', 'r'))
-    secrets = json.load(open('../config/secrets.json', 'r'))
+    config = json.load(open('./config/config.json', 'r'))
+    secrets = json.load(open('./config/secrets.json', 'r'))
 
     url = config['jira_get_issue_api'] + str(issue_key)
     token = secrets['jira_auth_token']

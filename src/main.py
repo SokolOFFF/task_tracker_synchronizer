@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from threading import Thread
-import synchronizer
-import api_functions
+import src.synchronizer as synchronizer
+import src.api_functions as api_functions
 import json
 
 app = FastAPI()

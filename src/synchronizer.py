@@ -10,7 +10,10 @@ rules = None
 # Updates rules
 def update_rules():
     global rules
-    rules = json.load(open("../config/rules.json", "r"))
+    try:
+        rules = json.load(open('../config/rules.json', 'r'))
+    except FileNotFoundError:
+        print("Error: Rules file not found")
 
 
 # Applies rule to the data

@@ -26,13 +26,14 @@ jobs:
         run: poetry install --no-root
 
   test:
+    runs-on: ubuntu-22.04
     name: Testing
     steps:
       - name: Run Linter
         run: poetry run flake8
 
       - name: Run pytest
-        run: poetry run pytest test/
+        run: poetry run pytest ./tests --cov ./src
 
       - name: Run bandit
         run: poetry run bandit -r src/
