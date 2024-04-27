@@ -31,7 +31,7 @@ def get_youtrack_issue(issue_id):
 
 
 @app.get("/check_jira_issue/{issue_id}/")
-def get_youtrack_issue(issue_id):
+def get_jira_issue(issue_id):
     try:
         api_functions.get_jira_issue_json(issue_id)
         return True
