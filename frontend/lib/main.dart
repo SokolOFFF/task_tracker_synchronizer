@@ -93,6 +93,10 @@ class _AllRulesScreenState extends State<AllRulesScreen> {
                     rules: data,
                     selected: _selectedRule,
                     onTap: (i) => setState(() => _selectedRule = i),
+                    addRule: () => showModalBottomSheet(
+                      context: context,
+                      builder: (context) => SelectTasksScreen(api: widget.api),
+                    ),
                   ),
                 ErrorData(:final message) => Center(
                     child: Text(
@@ -109,8 +113,9 @@ class _AllRulesScreenState extends State<AllRulesScreen> {
               child: SizedBox(
                 width: 600,
                 child: switch (_selectedRule) {
-                  null => const Text(
+                  null => Text(
                       'Select a rule in the sidebar',
+                      style: textTheme.headlineSmall?.copyWith(color: Colors.white54),
                       textAlign: TextAlign.center,
                     ),
                   int n => switch (_rules) {
@@ -130,11 +135,13 @@ class _AllRulesScreenState extends State<AllRulesScreen> {
 class AllRulesList extends StatelessWidget {
   final List<TasksSync> rules;
   final void Function(int i) onTap;
+  final void Function() addRule;
   final int? selected;
   const AllRulesList({
     super.key,
     required this.rules,
     required this.onTap,
+    required this.addRule,
     required this.selected,
   });
 
@@ -164,9 +171,16 @@ class AllRulesList extends StatelessWidget {
               ),
             ),
           ),
+          ElevatedButton(
+            onPressed: addRule,
+            child: Text(
+              'Add rule',
+              style: textTheme.bodyLarge,
+            ),
+          ),
         ]
             .expand(
-              (element) => [element, const SizedBox(height: 16)],
+              (element) => [element, const SizedBox(height: 8)],
             )
             .toList(),
       ),
@@ -184,7 +198,12 @@ class SelectedRule extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ArrowedTexts([rule.taskFromId, rule.taskToId], style: textTheme.displayLarge),
+        ArrowedTexts(
+          [rule.taskFromId, rule.taskToId],
+          style: textTheme.displayLarge,
+          iconSize: 36,
+          mainAxisAlignment: MainAxisAlignment.start,
+        ),
         ...switch (rule.fields) {
           null => [],
           Map<String, Rule> f => [
@@ -353,11 +372,20 @@ class _AddRulesScreenState extends State<AddRulesScreen> {
 class ArrowedTexts extends StatelessWidget {
   final List<String> texts;
   final TextStyle? style;
-  const ArrowedTexts(this.texts, {super.key, this.style});
+  final double? iconSize;
+  final MainAxisAlignment? mainAxisAlignment;
+  const ArrowedTexts(
+    this.texts, {
+    super.key,
+    this.style,
+    this.iconSize,
+    this.mainAxisAlignment,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
       children: texts
           .map(
             (e) => Text(
@@ -365,7 +393,7 @@ class ArrowedTexts extends StatelessWidget {
               style: style,
             ),
           )
-          .expand((element) => [const Icon(Icons.arrow_right_sharp), element])
+          .expand((element) => [Icon(Icons.arrow_right_sharp, size: iconSize), element])
           .skip(1)
           .toList(),
     );
