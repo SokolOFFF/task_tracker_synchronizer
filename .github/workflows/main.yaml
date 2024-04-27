@@ -1,0 +1,38 @@
+name: Task Tracker Synchronizer Pipeline
+
+on: push
+
+# TODO: add coverage and check commands
+# TODO: add reliability
+# TODO: add security
+jobs:
+  build:
+    name: Building
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Poetry installation
+        run: pip install poetry
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+
+      - name: Installing dependencies
+        run: poetry install --no-root
+
+  test:
+    name: Testing
+    steps:
+      - name: Run Linter
+        run: poetry run flake8
+
+      - name: Run pytest
+        run: poetry run pytest test/
+
+      - name: Run bandit
+        run: poetry run bandit -r src/
