@@ -25,10 +25,6 @@ jobs:
       - name: Installing dependencies
         run: poetry install --no-root
 
-  test:
-    runs-on: ubuntu-22.04
-    name: Testing
-    steps:
       - name: Run Linter
         run: poetry run flake8
 
