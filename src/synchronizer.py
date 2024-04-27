@@ -1,6 +1,6 @@
 from time import sleep
 from datetime import datetime, timedelta
-from api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
+from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
 import json
 
 config = None
@@ -10,17 +10,17 @@ rules = None
 # Updates rules
 def update_rules():
     global rules
-    rules = json.load(open('config/rules.json', 'r'))
+    rules = json.load(open("../config/rules.json", "r"))
 
 
 # Applies rule to the data
 def apply_rule(task_1_current_data, task_2_current_data, rule):
     task_2_new_data = task_2_current_data.copy()
-    for field in rule['fields']:
-        if rule['fields'][field]['rule_type'] == 1:
+    for field in rule["fields"]:
+        if rule["fields"][field]["rule_type"] == 1:
             task_2_new_data[field] = task_1_current_data[field]
         else:
-            relations = rule['fields'][field]['relations']
+            relations = rule["fields"][field]["relations"]
             for relation in relations:
                 if relation == task_1_current_data[field]:
                     task_2_new_data[field] = relations[relation]
@@ -29,7 +29,9 @@ def apply_rule(task_1_current_data, task_2_current_data, rule):
 
 # Checks if two tasks are synchronized
 def check_two_tasks_synchronization(rule):
-    print(f'Checking synchronization of task {rule["task_id_1"]} and {rule["task_id_2"]}')
+    print(
+        f'Checking synchronization of task {rule["task_id_1"]} and {rule["task_id_2"]}'
+    )
     task_2_current_data = get_jira_issue_json(rule["task_id_2"])
     task_1_current_data = get_youtrack_issue_json(rule["task_id_1"])
     new_data = apply_rule(task_1_current_data, task_2_current_data, rule)
@@ -39,7 +41,7 @@ def check_two_tasks_synchronization(rule):
 
 # Checks if task trackers are synchronized
 def check_synchronizations():
-    print('Checking all synchronizations...')
+    print("Checking all synchronizations...")
     for rule in rules:
         check_two_tasks_synchronization(rules[rule])
 
@@ -47,8 +49,8 @@ def check_synchronizations():
 # Main function
 def main():
     global config
-    config = json.load(open('config/config.json', 'r'))
-    frequency = config['frequency']
+    config = json.load(open("../config/config.json", "r"))
+    frequency = config["frequency"]
     max_difference = timedelta(seconds=int(frequency))
 
     update_rules()
@@ -62,5 +64,5 @@ def main():
         sleep(5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
