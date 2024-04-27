@@ -1,3 +1,6 @@
 {
-  "frequency": 5
+  "frequency": 5,
+  "jira_get_issue_api": "https://task-tracker-demo.atlassian.net/rest/api/3/issue/",
+  "youtrack_get_issue_api": "https://task-tracker-demo.youtrack.cloud/api/issues/",
+  "task_fields": ["Summary", "Description", "Status", "Priority", "Estimation", "Due date"]
 }
