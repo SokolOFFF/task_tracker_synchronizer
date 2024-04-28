@@ -5,8 +5,10 @@ import src.api_functions as api_functions
 import json
 from pydantic import BaseModel
 
+
 class Rules(BaseModel):
     rules: list
+
 
 app = FastAPI()
 

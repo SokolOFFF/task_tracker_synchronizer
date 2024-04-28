@@ -3,8 +3,7 @@ import pytest
 from unittest.mock import patch, mock_open
 import json
 from fastapi.testclient import TestClient
-from src.main import app
-
+from src.main import app, add_rules, get_jira_issue, get_rules, get_youtrack_issue
 client = TestClient(app)
 mock_rules = {
     "TASK-1_TASK-2": {
@@ -61,23 +60,16 @@ def mock_rules():
         }
     }
 
-# TODO
-# @patch('src.synchronizer.rules', mock_rules)
-# def test_get_rules(mock_rules):
-#     response = client.get("/rules/")
-#     assert response.status_code == 200
-    # assert response.json().get('TASK-1_TASK-2') == mock_rules['TASK-1_TASK-2']
-
 
 @patch('src.api_functions.get_youtrack_issue_json', side_effect=Exception('Test Exception'))
-def test_check_youtrack_issue(mock_get_youtrack):
+def test_get_youtrack_issue(mock_get_youtrack):
     response = client.get("/check_youtrack_issue/TEST-123/")
     assert response.status_code == 200
     assert response.json() == False
 
 
 @patch('src.api_functions.get_jira_issue_json', side_effect=Exception('Test Exception'))
-def test_check_jira_issue(mock_get_jira):
+def test_get_jira_issue(mock_get_jira):
     response = client.get("/check_jira_issue/TEST-123/")
     assert response.status_code == 200
     assert response.json() == False

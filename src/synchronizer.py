@@ -2,16 +2,18 @@ from time import sleep
 from datetime import datetime, timedelta
 from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
 import json
+import threading
 
 config = None
 rules = None
+stop_event = threading.Event()
 
 
 # Updates rules
 def update_rules():
     global rules
     try:
-        rules = json.load(open('../config/rules.json', 'r'))
+        rules = json.load(open('./config/rules.json', 'r'))
     except FileNotFoundError:
         print("Error: Rules file not found")
 
@@ -50,16 +52,18 @@ def check_synchronizations():
 
 
 # Main function
+
+
 def main():
     global config
-    config = json.load(open("../config/config.json", "r"))
+    config = json.load(open("./config/config.json", "r"))
     frequency = config["frequency"]
     max_difference = timedelta(seconds=int(frequency))
 
     update_rules()
     check_synchronizations()
     last_time_update = datetime.now()
-    while True:
+    while not stop_event.is_set():
         if datetime.now() - last_time_update > max_difference:
             update_rules()
             check_synchronizations()

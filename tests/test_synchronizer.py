@@ -1,14 +1,11 @@
-from src.synchronizer import update_rules
+
+import time
+import threading
+import json
 from unittest.mock import mock_open, patch
 import pytest
-from src.synchronizer import update_rules, apply_rule, check_two_tasks_synchronization, check_synchronizations, main
-from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
-from unittest.mock import patch, mock_open
-import io
-import itertools
-from time import sleep
-from datetime import datetime, timedelta
-import json
+from src import synchronizer
+from src.synchronizer import update_rules, apply_rule, check_two_tasks_synchronization, check_synchronizations
 
 
 def test_apply_rule():
@@ -30,8 +27,8 @@ def test_apply_rule():
             }
         }
     }
-    assert apply_rule(task_1_current_data, task_2_current_data,
-                      rule) == task_1_current_data
+    assert synchronizer.apply_rule(task_1_current_data, task_2_current_data,
+                                   rule) == task_1_current_data
 
 
 def test_check_two_tasks_synchronization():
@@ -134,4 +131,43 @@ def test_update_rules_file_not_found(capsys):
         update_rules()
         assert "Error: Rules file not found" in capsys.readouterr().out
 
-# TODO: Add tests for the main function
+
+mock_config = {
+    "frequency": 60,
+    "task_fields": ["Summary", "Description", "Status", "Priority", "Estimation", "Due date"]
+}
+
+mock_rules = {
+    "TASK-1_TASK-2": {
+        "task_id_1": "TASK-1",
+        "task_id_2": "TASK-2",
+        "fields": {
+            "Summary": {"rule_type": 1},
+            "Description": {"rule_type": 1},
+            "Status": {
+                "rule_type": 2,
+                "relations": {
+                    "Open": "To Do",
+                    "In Progress": "In Progress",
+                    "Done": "Done"
+                }
+            },
+            "Priority": {"rule_type": 1},
+            "Estimation": {"rule_type": 1},
+            "Due date": {"rule_type": 1}
+        }
+    }
+}
+
+
+def test_main(monkeypatch):
+    monkeypatch.setattr(synchronizer, "config", mock_config)
+    monkeypatch.setattr(synchronizer, "rules", mock_rules)
+    monkeypatch.setattr(synchronizer, "update_rules", lambda: None)
+    monkeypatch.setattr(synchronizer, "check_synchronizations", lambda: None)
+    main_thread = threading.Thread(target=synchronizer.main)
+    main_thread.start()
+    time.sleep(1)
+    synchronizer.stop_event.set()
+    main_thread.join()
+    assert not main_thread.is_alive()

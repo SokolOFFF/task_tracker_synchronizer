@@ -7,8 +7,8 @@ import json
 
 # Gets jira issue data from API
 def __get_jira_issue_data(issue_key):
-    config = json.load(open('../config/config.json', 'r'))
-    secrets = json.load(open('../config/secrets.json', 'r'))
+    config = json.load(open('./config/config.json', 'r'))
+    secrets = json.load(open('./config/secrets.json', 'r'))
 
     url = config['jira_get_issue_api'] + str(issue_key)
     token = secrets['jira_auth_token']
@@ -45,8 +45,8 @@ def get_jira_issue_json(issue_key):
 
 # Gets youtrack data from API
 def __get_youtrack_issue_data(issue_key):
-    config = json.load(open('../config/config.json', 'r'))
-    secrets = json.load(open('../config/secrets.json', 'r'))
+    config = json.load(open('./config/config.json', 'r'))
+    secrets = json.load(open('./config/secrets.json', 'r'))
 
     token = secrets['youtrack_auth_token']
 
@@ -54,7 +54,8 @@ def __get_youtrack_issue_data(issue_key):
         "Authorization": token,
         "Accept": "application/json",
     }
-    url = config['youtrack_get_issue_api'] + str(issue_key) + "?fields=$type,id,summary,description,customFields($type,id,name,value($type,name))"
+    url = config['youtrack_get_issue_api'] + \
+        str(issue_key) + "?fields=$type,id,summary,description,customFields($type,id,name,value($type,name))"
 
     response = requests.request(
         "GET",
@@ -86,7 +87,8 @@ def get_youtrack_issue_json(issue_key):
             estimation = field['value']
 
         if field['name'] == 'Due Date':
-            due_date = datetime.datetime.fromtimestamp(field['value'] / 1000).strftime("%Y-%m-%d")
+            due_date = datetime.datetime.fromtimestamp(
+                field['value'] / 1000).strftime("%Y-%m-%d")
 
     return {"Summary": summary, 'Description': description, "Status": status, "Priority": priority, "Estimation": estimation, "Due date": due_date}
 
@@ -107,31 +109,31 @@ def edit_jira_issue(issue_key, new_json_data):
     }
 
     payload = json.dumps(
-    {
-        "fields": {
-            "summary": new_json_data['Summary'],
-            "customfield_10016": new_json_data['Estimation'],
-            "duedate": new_json_data['Due date'],
-            "priority": {
-                "name": new_json_data['Priority']
-            },
-            "description": {
-                            "type": "doc",
-                            "version": 1,
+        {
+            "fields": {
+                "summary": new_json_data['Summary'],
+                "customfield_10016": new_json_data['Estimation'],
+                "duedate": new_json_data['Due date'],
+                "priority": {
+                    "name": new_json_data['Priority']
+                },
+                "description": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                        {
+                            "type": "paragraph",
                             "content": [
                                 {
-                                    "type": "paragraph",
-                                    "content": [
-                                        {
-                                            "text": new_json_data['Description'],
-                                            "type": "text"
-                                        }
-                                    ]
+                                    "text": new_json_data['Description'],
+                                    "type": "text"
                                 }
                             ]
                         }
-          }
-    })
+                    ]
+                }
+            }
+        })
 
     response = requests.request(
         "PUT",
@@ -155,9 +157,9 @@ def edit_jira_issue(issue_key, new_json_data):
             transition_id = transition['id']
 
     payload = json.dumps(
-    {
-        "transition": {"id": transition_id}
-    })
+        {
+            "transition": {"id": transition_id}
+        })
     response = requests.request(
         "POST",
         url,
