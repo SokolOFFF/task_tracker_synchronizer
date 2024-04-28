@@ -1,5 +1,4 @@
 import datetime
-
 import requests
 from requests.auth import HTTPBasicAuth
 import json
@@ -7,8 +6,8 @@ import json
 
 # Gets jira issue data from API
 def __get_jira_issue_data(issue_key):
-    config = json.load(open('./config/config.json', 'r'))
-    secrets = json.load(open('./config/secrets.json', 'r'))
+    config = json.load(open('../config/config.json', 'r'))
+    secrets = json.load(open('../config/secrets.json', 'r'))
 
     url = config['jira_get_issue_api'] + str(issue_key)
     token = secrets['jira_auth_token']
@@ -45,8 +44,8 @@ def get_jira_issue_json(issue_key):
 
 # Gets youtrack data from API
 def __get_youtrack_issue_data(issue_key):
-    config = json.load(open('./config/config.json', 'r'))
-    secrets = json.load(open('./config/secrets.json', 'r'))
+    config = json.load(open('../config/config.json', 'r'))
+    secrets = json.load(open('../config/secrets.json', 'r'))
 
     token = secrets['youtrack_auth_token']
 
@@ -95,8 +94,8 @@ def get_youtrack_issue_json(issue_key):
 
 # Function which edits jira issue
 def edit_jira_issue(issue_key, new_json_data):
-    config = json.load(open('./config/config.json', 'r'))
-    secrets = json.load(open('./config/secrets.json', 'r'))
+    config = json.load(open('../config/config.json', 'r'))
+    secrets = json.load(open('../config/secrets.json', 'r'))
 
     url = config['jira_get_issue_api'] + str(issue_key)
     token = secrets['jira_auth_token']

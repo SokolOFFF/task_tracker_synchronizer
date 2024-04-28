@@ -6,7 +6,7 @@ from unittest.mock import mock_open, patch
 import pytest
 from src import synchronizer
 from src.synchronizer import update_rules, apply_rule, check_two_tasks_synchronization, check_synchronizations
-
+# from src.api_functions import
 
 def test_apply_rule():
     task_1_current_data = {
@@ -27,7 +27,7 @@ def test_apply_rule():
             }
         }
     }
-    assert synchronizer.apply_rule(task_1_current_data, task_2_current_data,
+    assert apply_rule(task_1_current_data, task_2_current_data,
                                    rule) == task_1_current_data
 
 

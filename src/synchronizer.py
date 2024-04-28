@@ -13,7 +13,7 @@ stop_event = threading.Event()
 def update_rules():
     global rules
     try:
-        rules = json.load(open('./config/rules.json', 'r'))
+        rules = json.load(open('../config/rules.json', 'r'))
     except FileNotFoundError:
         print("Error: Rules file not found")
 
@@ -56,7 +56,7 @@ def check_synchronizations():
 
 def main():
     global config
-    config = json.load(open("./config/config.json", "r"))
+    config = json.load(open("../config/config.json", "r"))
     frequency = config["frequency"]
     max_difference = timedelta(seconds=int(frequency))
 
