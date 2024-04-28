@@ -3,6 +3,10 @@ from threading import Thread
 import src.synchronizer as synchronizer
 import src.api_functions as api_functions
 import json
+from pydantic import BaseModel
+
+class Rules(BaseModel):
+    rules: list
 
 app = FastAPI()
 
@@ -31,7 +35,7 @@ def get_youtrack_issue(issue_id):
 
 
 @app.get("/check_jira_issue/{issue_id}/")
-def get_youtrack_issue(issue_id):
+def get_jira_issue(issue_id):
     try:
         api_functions.get_jira_issue_json(issue_id)
         return True
@@ -39,21 +43,22 @@ def get_youtrack_issue(issue_id):
         return False
 
 
-def __add_rule(rule):
-    json_rule = json.loads(rule)
+def __add_rules(rules):
+    new_rules = [json.loads(rule) for rule in rules]
     all_rules = synchronizer.rules
-    task_1 = json_rule["task_id_1"]
-    task_2 = json_rule["task_id_2"]
-    all_rules[f"{task_1}_{task_2}"] = json_rule
+    for r in new_rules:
+        task_1 = r["task_id_1"]
+        task_2 = r["task_id_2"]
+        all_rules[f"{task_1}_{task_2}"] = r
     print(all_rules)
-    with open("../config/config.json", "w") as f:
-        f.write(all_rules)
+    # with open("../config/config.json", "w") as f:
+    #     f.write(all_rules)
 
 
-@app.post("/rule/")
-def add_rule(new_rule):
+@app.post("/rules/")
+def add_rules(new_rules: Rules):
     try:
-        __add_rule(new_rule)
+        __add_rules(new_rules.rules)
         return {"Success": True}
     except Exception:
         return {"Success": False}
