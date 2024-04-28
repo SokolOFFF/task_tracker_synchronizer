@@ -1,14 +1,6 @@
-from cgitb import text
-import pytest
-from src.synchronizer import update_rules, apply_rule, check_two_tasks_synchronization, check_synchronizations, main
-from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
-from unittest.mock import patch, mock_open
-import io
-import itertools
-from time import sleep
-from datetime import datetime, timedelta
-import pytest
-from unittest.mock import patch, mock_open
+from src.api_functions import get_jira_issue_json, \
+    get_youtrack_issue_json, edit_jira_issue
+from unittest.mock import patch
 import json
 
 

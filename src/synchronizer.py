@@ -1,6 +1,7 @@
 from time import sleep
 from datetime import datetime, timedelta
-from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
+from src.api_functions import get_jira_issue_json, \
+    get_youtrack_issue_json, edit_jira_issue
 import json
 import threading
 
@@ -34,8 +35,10 @@ def apply_rule(task_1_current_data, task_2_current_data, rule):
 
 # Checks if two tasks are synchronized
 def check_two_tasks_synchronization(rule):
+    rule1 = rule["task_id_1"]
+    rule2 = rule["task_id_2"]
     print(
-        f'Checking synchronization of task {rule["task_id_1"]} and {rule["task_id_2"]}'
+        f'Checking synchronization of task {rule1} and {rule2}'
     )
     task_2_current_data = get_jira_issue_json(rule["task_id_2"])
     task_1_current_data = get_youtrack_issue_json(rule["task_id_1"])

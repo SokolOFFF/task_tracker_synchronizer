@@ -1,10 +1,6 @@
 name: Task Tracker Synchronizer Pipeline
 
 on: push
-
-# TODO: add coverage and check commands
-# TODO: add reliability
-# TODO: add security
 jobs:
   build:
     name: Building
@@ -25,13 +21,11 @@ jobs:
       - name: Installing dependencies
         run: poetry install --no-root
 
-      # - name: Run Linter
-      #   run: poetry run flake8
+      - name: Run bandit
+        run: poetry run bandit -r src/ --exclude test_api_functions.py,test_main.py,test_synchronizer.py
+
+      - name: Run Linter
+        run: poetry run flake8
 
       - name: Run pytest
-        # pip install pytest-cov-exclude
-        # pytest --cov=. --cov-report=html --cov-exclude="test_*" test_api_functions.py test_main.py test_synchronizer.py
         run: cd src; poetry run pytest  --cov=.  test_api_functions.py test_main.py test_synchronizer.py
-
-      - name: Run bandit
-        run: poetry run bandit -r src/

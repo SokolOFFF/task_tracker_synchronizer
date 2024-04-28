@@ -1,12 +1,11 @@
-
 import time
 import threading
 import json
 from unittest.mock import mock_open, patch
-import pytest
 from src import synchronizer
-from src.synchronizer import update_rules, apply_rule, check_two_tasks_synchronization, check_synchronizations
-# from src.api_functions import
+from src.synchronizer import update_rules, apply_rule, \
+    check_two_tasks_synchronization, check_synchronizations
+
 
 def test_apply_rule():
     task_1_current_data = {
@@ -28,7 +27,7 @@ def test_apply_rule():
         }
     }
     assert apply_rule(task_1_current_data, task_2_current_data,
-                                   rule) == task_1_current_data
+                      rule) == task_1_current_data
 
 
 def test_check_two_tasks_synchronization():
@@ -44,17 +43,20 @@ def test_check_two_tasks_synchronization():
             }
         }
     }
-    with patch("src.synchronizer.get_jira_issue_json") as mock_get_jira_issue_json:
+    with patch("src.synchronizer.get_jira_issue_json") \
+            as mock_get_jira_issue_json:
         mock_get_jira_issue_json.return_value = {
             "Summary": "Summary1",
             "Status": "Status1"
         }
-        with patch("src.synchronizer.get_youtrack_issue_json") as mock_get_youtrack_issue_json:
+        with patch("src.synchronizer.get_youtrack_issue_json")\
+                as mock_get_youtrack_issue_json:
             mock_get_youtrack_issue_json.return_value = {
                 "Summary": "Summary2",
                 "Status": "Status2"
             }
-            with patch("src.synchronizer.edit_jira_issue") as mock_edit_jira_issue:
+            with patch("src.synchronizer.edit_jira_issue") \
+                    as mock_edit_jira_issue:
                 check_two_tasks_synchronization(rule)
                 mock_edit_jira_issue.assert_called_once_with("task2", {
                     "Summary": "Summary2",
@@ -134,7 +136,8 @@ def test_update_rules_file_not_found(capsys):
 
 mock_config = {
     "frequency": 60,
-    "task_fields": ["Summary", "Description", "Status", "Priority", "Estimation", "Due date"]
+    "task_fields":
+    ["Summary", "Description", "Status", "Priority", "Estimation", "Due date"]
 }
 
 mock_rules = {

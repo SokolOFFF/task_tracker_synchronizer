@@ -39,7 +39,9 @@ def get_jira_issue_json(issue_key):
     estimation = fields['customfield_10016']
     due_date = fields['duedate']
 
-    return {"Summary": summary, 'Description': description, "Status": status, "Priority": priority, "Estimation": estimation, "Due date": due_date}
+    return {"Summary": summary, 'Description': description,
+            "Status": status, "Priority": priority,
+            "Estimation": estimation, "Due date": due_date}
 
 
 # Gets youtrack data from API
@@ -54,7 +56,8 @@ def __get_youtrack_issue_data(issue_key):
         "Accept": "application/json",
     }
     url = config['youtrack_get_issue_api'] + \
-        str(issue_key) + "?fields=$type,id,summary,description,customFields($type,id,name,value($type,name))"
+        str(issue_key) + "?fields=$type,id,summary,description," + \
+        "customFields($type,id,name,value($type,name))"
 
     response = requests.request(
         "GET",
@@ -87,9 +90,12 @@ def get_youtrack_issue_json(issue_key):
 
         if field['name'] == 'Due Date':
             due_date = datetime.datetime.fromtimestamp(
-                field['value'] / 1000).strftime("%Y-%m-%d")
+                field['value'] / 1000).strftime(
+                    "%Y-%m-%d")
 
-    return {"Summary": summary, 'Description': description, "Status": status, "Priority": priority, "Estimation": estimation, "Due date": due_date}
+    return {"Summary": summary, 'Description': description,
+            "Status": status, "Priority": priority,
+            "Estimation": estimation, "Due date": due_date}
 
 
 # Function which edits jira issue
