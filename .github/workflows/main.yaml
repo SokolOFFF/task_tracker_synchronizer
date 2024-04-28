@@ -3,7 +3,7 @@ name: Task Tracker Synchronizer Pipeline
 on: push
 jobs:
   build:
-    name: Building
+    name: Building and Testing
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout

@@ -134,40 +134,38 @@ def test_update_rules_file_not_found(capsys):
         assert "Error: Rules file not found" in capsys.readouterr().out
 
 
-mock_config = {
-    "frequency": 60,
-    "task_fields":
-    ["Summary", "Description", "Status", "Priority", "Estimation", "Due date"]
-}
-
-mock_rules = {
-    "TASK-1_TASK-2": {
-        "task_id_1": "TASK-1",
-        "task_id_2": "TASK-2",
-        "fields": {
-            "Summary": {"rule_type": 1},
-            "Description": {"rule_type": 1},
-            "Status": {
-                "rule_type": 2,
-                "relations": {
-                    "Open": "To Do",
-                    "In Progress": "In Progress",
-                    "Done": "Done"
-                }
-            },
-            "Priority": {"rule_type": 1},
-            "Estimation": {"rule_type": 1},
-            "Due date": {"rule_type": 1}
+def test_main(mock_patch):
+    mock_config = {
+        "frequency": 60,
+        "task_fields":
+        ["Summary", "Description",
+         "Status", "Priority", "Estimation", "Due date"]
+    }
+    mock_rules = {
+        "TASK-1_TASK-2": {
+            "task_id_1": "TASK-1",
+            "task_id_2": "TASK-2",
+            "fields": {
+                "Summary": {"rule_type": 1},
+                "Description": {"rule_type": 1},
+                "Status": {
+                    "rule_type": 2,
+                    "relations": {
+                        "Open": "To Do",
+                        "In Progress": "In Progress",
+                        "Done": "Done"
+                    }
+                },
+                "Priority": {"rule_type": 1},
+                "Estimation": {"rule_type": 1},
+                "Due date": {"rule_type": 1}
+            }
         }
     }
-}
-
-
-def test_main(monkeypatch):
-    monkeypatch.setattr(synchronizer, "config", mock_config)
-    monkeypatch.setattr(synchronizer, "rules", mock_rules)
-    monkeypatch.setattr(synchronizer, "update_rules", lambda: None)
-    monkeypatch.setattr(synchronizer, "check_synchronizations", lambda: None)
+    mock_patch.setattr(synchronizer, "config", mock_config)
+    mock_patch.setattr(synchronizer, "rules", mock_rules)
+    mock_patch.setattr(synchronizer, "update_rules", lambda: None)
+    mock_patch.setattr(synchronizer, "check_synchronizations", lambda: None)
     main_thread = threading.Thread(target=synchronizer.main)
     main_thread.start()
     time.sleep(1)

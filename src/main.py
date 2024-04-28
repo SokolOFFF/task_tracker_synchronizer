@@ -23,7 +23,7 @@ def get_rules():
 
 
 @app.get("/task_fields/")
-def get_rules():
+def task_fields():
     return synchronizer.config["task_fields"]
 
 
