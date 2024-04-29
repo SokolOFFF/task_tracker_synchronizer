@@ -134,7 +134,7 @@ def test_update_rules_file_not_found(capsys):
         assert "Error: Rules file not found" in capsys.readouterr().out
 
 
-def test_main(mock_patch):
+def test_main(monkeypatch):
     mock_config = {
         "frequency": 60,
         "task_fields":
@@ -162,10 +162,10 @@ def test_main(mock_patch):
             }
         }
     }
-    mock_patch.setattr(synchronizer, "config", mock_config)
-    mock_patch.setattr(synchronizer, "rules", mock_rules)
-    mock_patch.setattr(synchronizer, "update_rules", lambda: None)
-    mock_patch.setattr(synchronizer, "check_synchronizations", lambda: None)
+    monkeypatch.setattr(synchronizer, "config", mock_config)
+    monkeypatch.setattr(synchronizer, "rules", mock_rules)
+    monkeypatch.setattr(synchronizer, "update_rules", lambda: None)
+    monkeypatch.setattr(synchronizer, "check_synchronizations", lambda: None)
     main_thread = threading.Thread(target=synchronizer.main)
     main_thread.start()
     time.sleep(1)
