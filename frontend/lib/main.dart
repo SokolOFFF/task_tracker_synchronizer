@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/presentation/add_rules_screen.dart';
 import 'package:frontend/presentation/all_rules_screen.dart';
+import 'package:frontend/presentation/cubits/rules_cubit.dart';
+import 'package:frontend/presentation/cubits/selected_rule_cubit.dart';
 
 void main() {
   runApp(
@@ -17,6 +19,8 @@ void main() {
             ctx.read<Dio>(),
           ),
         ),
+        BlocProvider(create: (context) => RulesCubit(context.read<Api>())),
+        BlocProvider(create: (context) => SelectedRuleCubit()),
       ],
       child: const MyApp(),
     ),
