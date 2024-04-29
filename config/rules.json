@@ -1,15 +1,3 @@
 {
-  "TTD-1_KAN-1" : {
-          "task_id_1" : "TTD-1",
-          "task_id_2" : "KAN-1",
-          "fields" : {
-            "Summary" : {
-              "rule_type" : 1
-            },
-            "Status" : {
-              "rule_type" : 2,
-              "relations": {"TO DO": "To Do", "IN PROGRESS":  "In Progress", "DONE": "Done"}
-            }
-          }
-  }
+  
 }
