@@ -1,13 +1,9 @@
 name: Task Tracker Synchronizer Pipeline
 
 on: push
-
-# TODO: add coverage and check commands
-# TODO: add reliability
-# TODO: add security
 jobs:
   build:
-    name: Building
+    name: Building and Testing
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -25,14 +21,11 @@ jobs:
       - name: Installing dependencies
         run: poetry install --no-root
 
-  test:
-    name: Testing
-    steps:
+      - name: Run bandit
+        run: poetry run bandit -r src/ --exclude test_api_functions.py,test_main.py,test_synchronizer.py
+
       - name: Run Linter
         run: poetry run flake8
 
       - name: Run pytest
-        run: poetry run pytest test/
-
-      - name: Run bandit
-        run: poetry run bandit -r src/
+        run: poetry run pytest --cov=./src tests/ --cov-fail-under=80
