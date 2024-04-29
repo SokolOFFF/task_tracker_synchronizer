@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 from fastapi.testclient import TestClient
 import sys
 sys.path.insert(0, './src/')
@@ -69,8 +69,8 @@ def test_task_fields(monkeypatch):
 def test__add_rules():
     mock_rules = {
         "TASK-1_TASK-2": {
-            "task_id_1": "TASK-1",
-            "task_id_2": "TASK-2",
+            "task_id_1": 1,
+            "task_id_2": 2,
             "fields": {
                 "Summary": {"rule_type": 1},
                 "Description": {"rule_type": 1}
@@ -79,35 +79,15 @@ def test__add_rules():
     }
     with patch('synchronizer.rules', mock_rules):
         new_rules = [
-            '{"task_id_1": "TASK-3", "task_id_2": "TASK-4", ' +
-            '"fields": {"Status": {"rule_type": 1}}}',
-            '{"task_id_1": "TASK-5", "task_id_2": "TASK-6",' +
-            ' "fields": {"Priority": {"rule_type": 1}}}'
+            {"task_id_1": 3, "task_id_2": 4, "fields": {
+                "Status": {"rule_type": 1}}},
+            {"task_id_1": 5, "task_id_2": 6, "fields": {
+                "Priority": {"rule_type": 1}}}
         ]
-        expected_result = {
-            "TASK-1_TASK-2": {
-                "task_id_1": "TASK-1",
-                "task_id_2": "TASK-2",
-                "fields": {
-                    "Summary": {"rule_type": 1},
-                    "Description": {"rule_type": 1}
-                }
-            },
-            "TASK-3_TASK-4": {
-                "task_id_1": "TASK-3",
-                "task_id_2": "TASK-4",
-                "fields": {
-                    "Status": {"rule_type": 1}
-                }
-            },
-            "TASK-5_TASK-6": {
-                "task_id_1": "TASK-5",
-                "task_id_2": "TASK-6",
-                "fields": {
-                    "Priority": {"rule_type": 1}
-                }
-            }
-        }
-        with patch('builtins.print') as mock_print:
-            main.__add_rules(new_rules)
-            mock_print.assert_called_with(expected_result)
+        expected_result = 'Saved to rules'
+        mock_open_file = mock_open()
+        with patch('builtins.open', mock_open_file):
+            with patch('builtins.print') as mock_print:
+                main.__add_rules(new_rules)
+                mock_print.assert_any_call(expected_result)
+                mock_open_file.assert_called_with('../config/rules.json', 'w')
