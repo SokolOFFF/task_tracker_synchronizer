@@ -29,3 +29,6 @@ jobs:
 
       - name: Run pytest
         run: poetry run pytest  --cov=.
+
+      - name: Calculate expression
+        run: echo "Result: $(( (70-16+47-16+51-8)/(70+47+51) ))"
