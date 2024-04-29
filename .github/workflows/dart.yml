@@ -28,10 +28,12 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: cd frontend;flutter pub get
+        working-directory: frontend/
+        run: flutter pub get
 
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
       # want to change this to 'flutter test'.
       - name: Run tests
-        run: cd frontend;flutter test
+        working-directory: frontend/
+        run: flutter test
