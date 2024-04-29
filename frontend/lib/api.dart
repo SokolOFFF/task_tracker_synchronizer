@@ -3,7 +3,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:frontend/models/tasks_sync.dart';
 
 class Api {
-  final _dio = Dio();
+  final Dio _dio;
+  Api(this._dio);
   final _localServer = 'http://127.0.0.1:8000';
 
   TaskEither<String, List<TasksSync>> getRules() => TaskEither.tryCatch(

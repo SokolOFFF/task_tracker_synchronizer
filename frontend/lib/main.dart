@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/api.dart';
@@ -8,7 +9,14 @@ void main() {
   runApp(
     MultiBlocProvider(
       providers: [
-        RepositoryProvider(create: (_) => Api()),
+        RepositoryProvider(
+          create: (_) => Dio(),
+        ),
+        RepositoryProvider(
+          create: (ctx) => Api(
+            ctx.read<Dio>(),
+          ),
+        ),
       ],
       child: const MyApp(),
     ),
