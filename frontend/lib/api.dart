@@ -3,7 +3,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:frontend/models/tasks_sync.dart';
 
 class Api {
-  final _dio = Dio();
+  final Dio _dio;
+  Api(this._dio);
   final _localServer = 'http://127.0.0.1:8000';
 
   TaskEither<String, List<TasksSync>> getRules() => TaskEither.tryCatch(
@@ -15,9 +16,12 @@ class Api {
         (error, _) => '$error',
       );
 
-  TaskEither<String, bool> addRule() => TaskEither.tryCatch(
+  TaskEither<String, bool> addRules(List<Map<String, dynamic>> rules) => TaskEither.tryCatch(
         () async {
-          final result = await _dio.post('$_localServer/rule/');
+          final result = await _dio.post(
+            '$_localServer/rules/',
+            data: {'rules': rules},
+          );
           final data = result.data as Map<String, dynamic>;
           return data['Success'] as bool;
         },
