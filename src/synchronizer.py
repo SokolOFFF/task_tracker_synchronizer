@@ -1,7 +1,9 @@
 from time import sleep
 from datetime import datetime, timedelta
 from src.api_functions import get_jira_issue_json, \
-    get_youtrack_issue_json, edit_jira_issue
+    get_youtrack_issue_json, edit_jira_issue  # TODO
+# from api_functions import get_jira_issue_json, \
+#     get_youtrack_issue_json, edit_jira_issue  # TODO
 import json
 import threading
 

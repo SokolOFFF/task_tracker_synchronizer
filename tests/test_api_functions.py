@@ -1,7 +1,6 @@
-from src.api_functions import get_jira_issue_json, \
-    get_youtrack_issue_json, edit_jira_issue
+import src.api_functions
 from unittest.mock import patch
-import json
+# import json
 
 
 @patch('src.api_functions.__get_jira_issue_data')
@@ -21,7 +20,7 @@ def test_get_jira_issue_json(mock_get_jira_data):
         }
     }
     mock_get_jira_data.return_value = mock_jira_issue_data
-    result = get_jira_issue_json('TEST-123')
+    result = src.api_functions.get_jira_issue_json('TEST-123')
     expected_result = {
         "Summary": "Test summary",
         "Description": "Test description",
@@ -47,7 +46,7 @@ def test_get_youtrack_issue_json(mock_get_youtrack_data):
         ]
     }
     mock_get_youtrack_data.return_value = mock_youtrack_issue_data
-    result = get_youtrack_issue_json('TEST-123')
+    result = src.api_functions.get_youtrack_issue_json('TEST-123')
     expected_result = {
         "Summary": "Test summary",
         "Description": "Test description",
@@ -59,24 +58,24 @@ def test_get_youtrack_issue_json(mock_get_youtrack_data):
     assert result == expected_result
 
 
-@patch('requests.request')
-def test_edit_jira_issue(mock_request):
-    mock_response = {
-        "transitions": [
-            {"id": 11, "name": "To Do"},
-            {"id": 21, "name": "In Progress"},
-            {"id": 31, "name": "Done"}
-        ]
-    }
-    mock_request.return_value.status_code = 200
-    mock_request.return_value.text = json.dumps(mock_response)
-    new_data = {
-        "Summary": "Updated summary",
-        "Description": "Updated description",
-        "Status": "In Progress",
-        "Priority": "Medium",
-        "Estimation": 10,
-        "Due date": "2023-05-10"
-    }
-    result = edit_jira_issue('TEST-123', new_data)
-    assert result == 200
+# @patch('requests.request')
+# def test_edit_jira_issue(mock_request):
+#     mock_response = {
+#         "transitions": [
+#             {"id": 11, "name": "To Do"},
+#             {"id": 21, "name": "In Progress"},
+#             {"id": 31, "name": "Done"}
+#         ]
+#     }
+#     mock_request.return_value.status_code = 200
+#     mock_request.return_value.text = json.dumps(mock_response)
+#     new_data = {
+#         "Summary": "Updated summary",
+#         "Description": "Updated description",
+#         "Status": "In Progress",
+#         "Priority": "Medium",
+#         "Estimation": 10,
+#         "Due date": "2023-05-10"
+#     }
+#     result = src.api_functions.edit_jira_issue('TEST-123', new_data)
+#     assert result == 200

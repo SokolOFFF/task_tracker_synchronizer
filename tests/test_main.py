@@ -1,7 +1,8 @@
 from unittest.mock import patch
 from fastapi.testclient import TestClient
-from src.main import app
-client = TestClient(app)
+# from src.main import app
+import src.main
+client = TestClient(src.main.app)
 mock_rules = {
     "TASK-1_TASK-2": {
         "task_id_1": "TASK-1",
