@@ -1,8 +1,11 @@
 from unittest.mock import patch
 from fastapi.testclient import TestClient
-# from src.main import app
-import src.main
-client = TestClient(src.main.app)
+import sys
+sys.path.insert(0, './src/')
+import main  # noqa: E402
+
+
+client = TestClient(main.app)
 mock_rules = {
     "TASK-1_TASK-2": {
         "task_id_1": "TASK-1",
@@ -28,13 +31,13 @@ mock_task_fields = ["Summary", "Description",
                     "Status", "Priority", "Estimation", "Due date"]
 
 
-@patch('src.synchronizer.main')
+@patch('synchronizer.main')
 def test_invalid_endpoint(mock_main):
     response = client.get("/invalid/")
     assert response.status_code == 404
 
 
-@patch('src.api_functions.get_youtrack_issue_json',
+@patch('api_functions.get_youtrack_issue_json',
        side_effect=Exception('Test Exception'))
 def test_get_youtrack_issue(mock_get_youtrack):
     response = client.get("/check_youtrack_issue/TEST-123/")
@@ -42,7 +45,7 @@ def test_get_youtrack_issue(mock_get_youtrack):
     assert not response.json()
 
 
-@patch('src.api_functions.get_jira_issue_json',
+@patch('api_functions.get_jira_issue_json',
        side_effect=Exception('Test Exception'))
 def test_get_jira_issue(mock_get_jira):
     response = client.get("/check_jira_issue/TEST-123/")

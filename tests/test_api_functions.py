@@ -1,9 +1,12 @@
-import src.api_functions
-from unittest.mock import patch
+
 # import json
+from unittest.mock import patch
+import sys  # noqa: E402
+sys.path.insert(0, './src/')
+import api_functions  # noqa: E402
 
 
-@patch('src.api_functions.__get_jira_issue_data')
+@patch('api_functions.__get_jira_issue_data')
 def test_get_jira_issue_json(mock_get_jira_data):
     mock_jira_issue_data = {
         "fields": {
@@ -20,7 +23,7 @@ def test_get_jira_issue_json(mock_get_jira_data):
         }
     }
     mock_get_jira_data.return_value = mock_jira_issue_data
-    result = src.api_functions.get_jira_issue_json('TEST-123')
+    result = api_functions.get_jira_issue_json('TEST-123')
     expected_result = {
         "Summary": "Test summary",
         "Description": "Test description",
@@ -32,7 +35,7 @@ def test_get_jira_issue_json(mock_get_jira_data):
     assert result == expected_result
 
 
-@patch('src.api_functions.__get_youtrack_issue_data')
+@patch('api_functions.__get_youtrack_issue_data')
 def test_get_youtrack_issue_json(mock_get_youtrack_data):
     mock_youtrack_issue_data = {
         "summary": "Test summary",
@@ -46,7 +49,7 @@ def test_get_youtrack_issue_json(mock_get_youtrack_data):
         ]
     }
     mock_get_youtrack_data.return_value = mock_youtrack_issue_data
-    result = src.api_functions.get_youtrack_issue_json('TEST-123')
+    result = api_functions.get_youtrack_issue_json('TEST-123')
     expected_result = {
         "Summary": "Test summary",
         "Description": "Test description",
@@ -77,5 +80,5 @@ def test_get_youtrack_issue_json(mock_get_youtrack_data):
 #         "Estimation": 10,
 #         "Due date": "2023-05-10"
 #     }
-#     result = src.api_functions.edit_jira_issue('TEST-123', new_data)
+#     result = api_functions.edit_jira_issue('TEST-123', new_data)
 #     assert result == 200

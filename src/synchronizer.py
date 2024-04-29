@@ -1,11 +1,8 @@
+import threading
+import json
 from time import sleep
 from datetime import datetime, timedelta
-from src.api_functions import get_jira_issue_json, \
-    get_youtrack_issue_json, edit_jira_issue  # TODO
-# from api_functions import get_jira_issue_json, \
-#     get_youtrack_issue_json, edit_jira_issue  # TODO
-import json
-import threading
+import api_functions
 
 config = None
 rules = None
@@ -42,11 +39,12 @@ def check_two_tasks_synchronization(rule):
     print(
         f'Checking synchronization of task {rule1} and {rule2}'
     )
-    task_2_current_data = get_jira_issue_json(rule["task_id_2"])
-    task_1_current_data = get_youtrack_issue_json(rule["task_id_1"])
+    task_2_current_data = api_functions.get_jira_issue_json(rule["task_id_2"])
+    task_1_current_data = api_functions.get_youtrack_issue_json(
+        rule["task_id_1"])
     new_data = apply_rule(task_1_current_data, task_2_current_data, rule)
     print(f'Updating {rule["task_id_2"]}...')
-    edit_jira_issue(rule["task_id_2"], new_data)
+    api_functions.edit_jira_issue(rule["task_id_2"], new_data)
 
 
 # Checks if task trackers are synchronized

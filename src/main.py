@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from threading import Thread
-import src.synchronizer as synchronizer  # TODO
-import src.api_functions as api_functions  # TODO
-# import synchronizer  # TODO
-# import api_functions  # TODO
+import synchronizer
+import api_functions
 import json
 from pydantic import BaseModel
 
