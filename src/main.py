@@ -6,8 +6,10 @@ import json
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+
 class Rules(BaseModel):
     rules: list
+
 
 app = FastAPI()
 origins = [
@@ -37,7 +39,7 @@ def get_rules():
 
 
 @app.get("/task_fields/")
-def get_rules():
+def task_fields():
     return synchronizer.config["task_fields"]
 
 

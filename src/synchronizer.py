@@ -1,16 +1,21 @@
+import threading
+import json
 from time import sleep
 from datetime import datetime, timedelta
-from src.api_functions import get_jira_issue_json, get_youtrack_issue_json, edit_jira_issue
-import json
+import api_functions
 
 config = None
 rules = None
+stop_event = threading.Event()
 
 
 # Updates rules
 def update_rules():
     global rules
-    rules = json.load(open("../config/rules.json", "r"))
+    try:
+        rules = json.load(open('../config/rules.json', 'r'))
+    except FileNotFoundError:
+        print("Error: Rules file not found")
 
 
 # Applies rule to the data
@@ -29,14 +34,17 @@ def apply_rule(task_1_current_data, task_2_current_data, rule):
 
 # Checks if two tasks are synchronized
 def check_two_tasks_synchronization(rule):
+    rule1 = rule["task_id_1"]
+    rule2 = rule["task_id_2"]
     print(
-        f'Checking synchronization of task {rule["task_id_1"]} and {rule["task_id_2"]}'
+        f'Checking synchronization of task {rule1} and {rule2}'
     )
-    task_2_current_data = get_jira_issue_json(rule["task_id_2"])
-    task_1_current_data = get_youtrack_issue_json(rule["task_id_1"])
+    task_2_current_data = api_functions.get_jira_issue_json(rule["task_id_2"])
+    task_1_current_data = api_functions.get_youtrack_issue_json(
+        rule["task_id_1"])
     new_data = apply_rule(task_1_current_data, task_2_current_data, rule)
     print(f'Updating {rule["task_id_2"]}...')
-    edit_jira_issue(rule["task_id_2"], new_data)
+    api_functions.edit_jira_issue(rule["task_id_2"], new_data)
 
 
 # Checks if task trackers are synchronized
@@ -47,6 +55,8 @@ def check_synchronizations():
 
 
 # Main function
+
+
 def main():
     global config
     config = json.load(open("../config/config.json", "r"))
@@ -56,7 +66,7 @@ def main():
     update_rules()
     check_synchronizations()
     last_time_update = datetime.now()
-    while True:
+    while not stop_event.is_set():
         if datetime.now() - last_time_update > max_difference:
             update_rules()
             check_synchronizations()
